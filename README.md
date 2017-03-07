@@ -1,7 +1,8 @@
 # fontx
 Linux FONTX Library
 
-Linuxで使えるFontxのライブラリを探しましたが見つからなかったので作りました。
+Linuxで使えるFontxのライブラリを探しましたが見つからなかったので作りました。 
+フォントファイルから指定されたコードのフォントパターンを取り出すだけの関数です。 
 
 cc main.c fontx.c  
 ./a.out
