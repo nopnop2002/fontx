@@ -1,4 +1,4 @@
-32Dot Font‚Ìo—Í
+32Dot Font Output
 
 sjis[0]=8abf
 00................................
