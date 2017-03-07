@@ -9,7 +9,7 @@ cc main.c fontx.c
 
 ---
 
-フォントファイルはこちらなどから入手可能です。
+FONTX形式のフォントファイルはこちらなどから入手可能です。
 
 <http://ayati.cocolog-nifty.com/blog/2012/08/ipalx322416-64a.html>
 
