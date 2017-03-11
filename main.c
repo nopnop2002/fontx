@@ -7,6 +7,23 @@
 
 #define MYBUFSZ 128
 
+void showFont(uint8_t *fonts, uint8_t pw, uint8_t ph) {
+  int x,y,fpos;
+  fpos=0;
+  for (y=0;y<ph;y++) {
+    printf("%02d",y);
+    for (x=0;x<pw;x++) {
+      if (fonts[fpos+x/8] & (0x80 >> (x % 8))) {
+       printf("*");
+      } else {
+       printf(".");
+      }
+    }
+    printf("\n");
+    fpos=fpos+(pw+7)/8;
+  }
+}
+
 int main (int argc, char **argv) {
   FontxFile fx[2];
 
@@ -22,12 +39,11 @@ int main (int argc, char **argv) {
   uint8_t fonts[128];
   uint8_t pw;
   uint8_t ph;
-  int x,y,fpos;
   int i;
 
   /* 変換元文字列を作成（このソースはUTF-8で書かれている）*/
   strcpy(str_in, "漢字TEST");
-//  printf("%d\n", strlen(str_in));
+  printf("%d\n", strlen(str_in));
 
   /* 文字コード変換(UTF-8->SJIS)処理 */
   ic = iconv_open("SJIS", "UTF-8");
@@ -54,23 +70,13 @@ int main (int argc, char **argv) {
 //  Fontx_init(fx,"./ILGH24XB.FNT","./ILGZ24XB.FNT"); // 24Dot Gothic
 //  Fontx_init(fx,"./ILGH32XB.FNT","./ILGZ32XB.FNT"); // 32Dot Gothic
 
+  bool rc;
   for (i=0;i<spos;i++) {
     printf("sjis[%d]=%x\n",i,sjis[i]);
-    Fontx_getGlyph(fx,sjis[i],fonts,&pw,&ph); // SJIS -> Fontパターン
-//    printf("pw=%d ph=%d\n",pw,ph);
-    fpos=0;
-    for (y=0;y<ph;y++) {
-      printf("%02d",y);
-      for (x=0;x<pw;x++) {
-        if (fonts[fpos+x/8] & (0x80 >> (x % 8))) {
-         printf("*");
-        } else {
-         printf(".");
-        }
-      }
-      printf("\n");
-      fpos=fpos+(pw+7)/8;
-    }
+    rc = Fontx_getGlyph(fx,sjis[i],fonts,&pw,&ph); // SJIS -> Fontパターン
+    printf("rc=%d pw=%d ph=%d\n",rc,pw,ph);
+    if (!rc) continue;
+    showFont(fonts,pw,ph);
   }
 
   return 0;
