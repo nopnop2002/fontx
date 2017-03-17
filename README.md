@@ -5,8 +5,8 @@ Linuxで使えるFontxのライブラリを探しましたが見つからなかったので作りました。
 フォントファイルから指定されたSJISコードのフォントパターンを取り出すだけの関数です。  
 RaspberryPiやOrangePiでグラフィックLCDに漢字を表示する際に使うことを想定しています。  
 
-git clone https://github.com/nopnop2002/fontx
-cd fontx
+git clone https://github.com/nopnop2002/fontx  
+cd fontx  
 cc main.c fontx.c  
 ./a.out
 
