@@ -24,14 +24,11 @@ cc main.c fontx.c
 
 ---
 
-こちらで公開されているESP8266用のライブラリを元にRPI/OPI用に移植しました。
-  
+こちらで公開されているESP8266用のライブラリを元にRPI/OPI用に移植しました。  
 https://github.com/h-nari/Fontx
   
 ---
 
-FONTX形式のフォントファイルはこちらなどから入手可能です。
-  
-<http://ayati.cocolog-nifty.com/blog/2012/08/ipalx322416-64a.html>
-  
+FONTX形式のフォントファイルはこちらなどから入手可能です。  
+<http://ayati.cocolog-nifty.com/blog/2012/08/ipalx322416-64a.html>  
 <http://www.geocities.jp/littlimi/misaki.htm>
