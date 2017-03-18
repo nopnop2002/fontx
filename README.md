@@ -16,7 +16,9 @@ UTFコードをSJISコードに変換する。
 UTFコードが含まれている文字列をSJIS配列に変換する。
   
 RaspberryPiやOrangePiでグラフィックLCDに漢字を表示する際に使うことを想定しています。
-  
+
+---
+
 git clone https://github.com/nopnop2002/fontx  
 cd fontx  
 cc main.c fontx.c  
