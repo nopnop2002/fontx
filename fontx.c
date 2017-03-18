@@ -390,6 +390,18 @@ void Font2Bitmap(uint8_t *fonts, uint8_t *line, uint8_t w, uint8_t h, uint8_t in
   }
 }
 
+// ビットマップを反転
+void ReversBitmap(uint8_t *line, uint8_t w, uint8_t h) {
+  int x,y;
+  uint8_t wk;
+  for(y=0; y<(h/8); y++){
+    for(x=0; x<w; x++){
+      wk = line[y*32+x];
+      line[y*32+x] = ~wk;
+    }
+  }
+}
+
 // フォントパターンの表示
 void ShowFont(uint8_t *fonts, uint8_t pw, uint8_t ph) {
   int x,y,fpos;
