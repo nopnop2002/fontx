@@ -15,6 +15,13 @@ UTFコードをSJISコードに変換する。
 4.String2SJIS  
 UTFコードが含まれている文字列をSJIS配列に変換する。
   
+5.ShowFont  
+フォントパターンを表示する。  
+表示例は16DotFont.txt/24DotFont.txt/32DotFont.txtを参照してください。
+  
+6.ShowBitmap  
+ビットマップを表示する。
+  
 RaspberryPiやOrangePiでグラフィックLCDに漢字を表示する際に使うことを想定しています。
 
 ---
