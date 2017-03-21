@@ -390,6 +390,18 @@ void Font2Bitmap(uint8_t *fonts, uint8_t *line, uint8_t w, uint8_t h, uint8_t in
   }
 }
 
+// アンダーラインを追加
+void UnderlineBitmap(uint8_t *line, uint8_t w, uint8_t h) {
+  int x,y;
+  uint8_t wk;
+  for(y=0; y<(h/8); y++){
+    for(x=0; x<w; x++){
+      wk = line[y*32+x];
+      if ( (y+1) == (h/8)) line[y*32+x] = wk + 0x80;
+    }
+  }
+}
+
 // ビットマップを反転
 void ReversBitmap(uint8_t *line, uint8_t w, uint8_t h) {
   int x,y;
@@ -500,7 +512,8 @@ if(FontxDebug)printf("[UTF2SJIS]sjis=%x\n",sjis);
 
 
 // UTFを含む文字列をSJISに変換
-int String2SJIS(unsigned char *str_in, uint8_t stlen, uint16_t *sjis) {
+int String2SJIS(unsigned char *str_in, uint8_t stlen, uint16_t *sjis,
+                uint8_t ssize) {
   int i;
   uint8_t sp;
   uint8_t c1 = 0;
@@ -522,12 +535,12 @@ if(FontxDebug)printf("[String2SJIS]sp[%d]=%x\n",i,sp);
 if(FontxDebug)printf("[String2SJIS]hankaku kana %x-%x-%x\n",c1,c2,sp);
           sjis2 = sp;
 if(FontxDebug)printf("[String2SJIS]sjis2=%x\n",sjis2);
-          sjis[spos++] = sjis2;
+          if (spos < ssize) sjis[spos++] = sjis2;
         } else if (c1 == 0xef && c2 == 0xbe) {
 if(FontxDebug)printf("[String2SJIS]hankaku kana %x-%x-%x\n",c1,c2,sp);
           sjis2 = 0xc0 + (sp - 0x80);
 if(FontxDebug)printf("[String2SJIS]sjis2=%x\n",sjis2);
-          sjis[spos++] = sjis2;
+          if (spos < ssize) sjis[spos++] = sjis2;
         } else {
 if(FontxDebug)printf("[String2SJIS]UTF8 %x-%x-%x\n",c1,c2,sp);
           utf8[0] = c1;
@@ -535,13 +548,13 @@ if(FontxDebug)printf("[String2SJIS]UTF8 %x-%x-%x\n",c1,c2,sp);
           utf8[2] = sp;
           sjis2 = UTF2SJIS(utf8);
 if(FontxDebug)printf("[String2SJIS]sjis2=%x\n",sjis2);
-          sjis[spos++] = sjis2;
+          if (spos < ssize) sjis[spos++] = sjis2;
         }
         c1 = c2 = 0;
       }
     } else if ((sp & 0x80) == 0) { // 1バイト文字の場合
 if(FontxDebug)printf("[String2SJIS]ANK %x\n",sp);
-        sjis[spos++] = sp;
+        if (spos < ssize) sjis[spos++] = sp;
     }
   }
   return spos;

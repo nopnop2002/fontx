@@ -9,20 +9,23 @@ Linuxで使えるFontxのライブラリを探しましたが見つからなかったので作りました。
 2.Fontx2Bitmap  
 フォントファイルをビットマップに変換する。
   
-3.ReversBitmap  
+3.UnderlineBitmap  
+ビットマップにアンダーラインを追加する。
+  
+4.ReversBitmap  
 ビットマップの0/1を反転する。
   
-4.UTF2SJIS  
+5.UTF2SJIS  
 UTFコードをSJISコードに変換する。
   
-5.String2SJIS  
+6.String2SJIS  
 UTFコードが含まれている文字列をSJIS配列に変換する。
   
-6.ShowFont  
+7.ShowFont  
 フォントパターンを表示する。  
 表示例は16DotFont.txt/24DotFont.txt/32DotFont.txtを参照してください。
   
-7.ShowBitmap  
+8.ShowBitmap  
 ビットマップを表示する。
   
 RaspberryPiやOrangePiでグラフィックLCDに漢字を表示する際に使うことを想定しています。  
