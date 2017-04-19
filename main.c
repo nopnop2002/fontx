@@ -25,7 +25,7 @@ int main (int argc, char **argv) {
 //  printf("%d\n", strlen(str_utf));
 
   /* 文字コード変換(UTF-8->SJIS) */
-  spos = String2SJIS(str_utf, strlen(str_utf), sjis);
+  spos = String2SJIS(str_utf, strlen(str_utf), sjis, 128);
 
   /* フォントファイルの指定(お好みで) */
   Fontx_init(fx,"./ILGH16XB.FNT","./ILGZ16XB.FNT"); // 16Dot Gothic
