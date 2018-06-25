@@ -3,33 +3,36 @@ Linux FONTX Library
 
 Linuxで使えるFontxのライブラリを探しましたが見つからなかったので作りました。
   
-1.GetFontx  
+1.Fontx_init  
+半角フォントと全角フォントを指定する。
+  
+2.GetFontx  
 フォントファイルから指定されたSJISコードのフォントパターンを取り出す。
   
-2.Fontx2Bitmap  
+3.Fontx2Bitmap  
 フォントファイルをビットマップに変換する。
   
-3.UnderlineBitmap  
+4.UnderlineBitmap  
 ビットマップにアンダーラインを追加する。
   
-4.ReversBitmap  
+5.ReversBitmap  
 ビットマップの0/1を反転する。
   
-5.UTF2SJIS  
+6.UTF2SJIS  
 UTFコードをSJISコードに変換する。
   
-6.String2SJIS  
+7.String2SJIS  
 UTFコードが含まれている文字列をSJIS配列に変換する。
   
-7.ShowFont  
+8.ShowFont  
 フォントパターンを表示する。  
 表示例は16DotFont.txt/24DotFont.txt/32DotFont.txtを参照してください。
   
-8.ShowBitmap  
+9.ShowBitmap  
 ビットマップを表示する。
   
-RaspberryPiやOrangePiでグラフィックLCDに漢字を表示する際に使うことを想定しています。  
-変換したビットマップをLCDのフレームバッファにコピーすればフォントが表示されます。
+RaspberryPiやOrangePiでTFTに漢字を表示する際に使うことを想定しています。  
+変換したビットマップをTFTのフレームバッファにコピーすれば文字が表示されます。
 
 ---
 
