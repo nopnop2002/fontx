@@ -50,6 +50,6 @@ https://github.com/h-nari/Fontx
 
 FONTX形式のフォントファイルはこちらなどから入手可能です。  
 <http://ayati.cocolog-nifty.com/blog/2012/08/ipalx322416-64a.html>  
-<http://www.geocities.jp/littlimi/misaki.htm>   
+<http://littlelimit.net/misaki.htm>   
 
 フォントファイルはfontxディレクトリに置いてください。   
