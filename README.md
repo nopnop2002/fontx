@@ -49,7 +49,10 @@ https://github.com/h-nari/Fontx
 ---
 
 FONTX形式のフォントファイルはこちらなどから入手可能です。  
+ILFONT03.zip  
 <http://ayati.cocolog-nifty.com/blog/2012/08/ipalx322416-64a.html>  
+
+misaki_fontx_2012-06-03.zip  
 <http://littlelimit.net/misaki.htm>   
 
 フォントファイルはfontxディレクトリに置いてください。   
