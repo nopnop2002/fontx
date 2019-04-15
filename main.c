@@ -9,8 +9,7 @@
 
 int main (int argc, char **argv) {
   FontxFile fx[2];
-
-  char    str_utf[MYBUFSZ+1];
+  char str_utf[MYBUFSZ+1];
   uint16_t sjis[128];
   int spos;
 
@@ -25,13 +24,17 @@ int main (int argc, char **argv) {
 //  printf("%d\n", strlen(str_utf));
 
   /* 文字コード変換(UTF-8->SJIS) */
-  spos = String2SJIS(str_utf, strlen(str_utf), sjis, 128);
+  spos = String2SJIS((unsigned char *)str_utf, strlen(str_utf), sjis, 128);
 
   /* フォントファイルの指定(お好みで) */
-  Fontx_init(fx,"./ILGH16XB.FNT","./ILGZ16XB.FNT"); // 16Dot Gothic
-//  Fontx_init(fx,"./ILMH16XB.FNT","./ILMZ16XB.FNT"); // 16Dot Mincyo
-//  Fontx_init(fx,"./ILGH24XB.FNT","./ILGZ24XB.FNT"); // 24Dot Gothic
-//  Fontx_init(fx,"./ILGH32XB.FNT","./ILGZ32XB.FNT"); // 32Dot Gothic
+  // 16Dot Gothic
+  //InitFontx(fx,"./fontx/ILGH16XB.FNT","./fontx/ILGZ16XB.FNT");
+  // 16Dot Mincyo
+  //InitFontx(fx,"./fontx/ILMH16XB.FNT","./fontx/ILMZ16XB.FNT");
+  // 24Dot Gothic
+  //InitFontx(fx,"./fontx/ILGH24XB.FNT","./fontx/ILGZ24XB.FNT");
+  // 32Dot Gothic
+  InitFontx(fx,"./fontx/ILGH32XB.FNT","./fontx/ILGZ32XB.FNT");
 
   bool rc;
   for (i=0;i<spos;i++) {
@@ -44,7 +47,7 @@ int main (int argc, char **argv) {
     Font2Bitmap(fonts, bitmap, pw, ph, 0);
     ShowBitmap(bitmap, pw, ph);
   }
-//  DumpFX(fx);
+  //DumpFontx(fx);
 
   return 0;
 }

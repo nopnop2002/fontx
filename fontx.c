@@ -8,59 +8,59 @@
 #define FontxDebug 0 // for Debug
 
 // フォントファイルパスを構造体に保存
-void Fontx_addFont(FontxFile *fx, const char *path)
+void AddFontx(FontxFile *fx, const char *path)
 {
-  memset(fx,0,sizeof(FontxFile));
+  memset(fx, 0, sizeof(FontxFile));
   fx->path = path;
   fx->opened = false;
 }
 
 // フォント構造体を初期化
-void Fontx_init(FontxFile *fxs,const char *f0,const char *f1)
+void InitFontx(FontxFile *fxs,const char *f0,const char *f1)
 {
-  Fontx_addFont(&fxs[0],f0);
-  Fontx_addFont(&fxs[1],f1);
+  AddFontx(&fxs[0],f0);
+  AddFontx(&fxs[1],f1);
 }
 
 // フォントファイルをOPEN
-bool Fontx_openFontxFile(FontxFile *fx)
+bool OpenFontx(FontxFile *fx)
 {
   FILE *f;
-  int i;
 
   if(!fx->opened){
-    fx->opened = true;
+//    fx->opened = true;
     f = fopen(fx->path,"r");
     if(!f){
       fx->valid = false;
-      printf("FsFontx:%s not found.\n",fx->path);
-    } else {
-      fx->file = f;
-      char buf[18];
+      printf("Fontx:%s not found.\n",fx->path);
+      return fx->valid;
+    } 
+    fx->opened = true;
+    fx->file = f;
+    char buf[18];
 
-      fread(buf, sizeof buf, 1, fx->file);
+    fread(buf, sizeof buf, 1, fx->file);
 //      for(i=0;i<sizeof(buf);i++) {
 //        printf("buf[%d]=%x\n",i,buf[i]);
 //      }
-      memcpy(fx->fxname,&buf[6],8);
-      fx->w = buf[14];
-      fx->h = buf[15];
-      fx->is_ank = (buf[16] == 0);
-      fx->bc = buf[17];
-      fx->fsz = (fx->w + 7)/8 * fx->h;
-      if(fx->fsz > FontxGlyphBufSize){
-	printf("too big font size.\n");
-	fx->valid = false;
-      } else {
-	fx->valid = true;
-      }
-    }
+    memcpy(fx->fxname,&buf[6],8);
+    fx->w = buf[14];
+    fx->h = buf[15];
+    fx->is_ank = (buf[16] == 0);
+    fx->bc = buf[17];
+    fx->fsz = (fx->w + 7)/8 * fx->h;
+    if(fx->fsz > FontxGlyphBufSize){
+      printf("too big font size.\n");
+      fx->valid = false;
+      return fx->valid;
+    } 
+    fx->valid = true;
   }
   return fx->valid;
 }
 
 // フォントファイルをCLOSE
-void Fontx_closeFontxFile(FontxFile *fx)
+void CloseFontx(FontxFile *fx)
 {
   if(fx->opened){
     fclose(fx->file);
@@ -163,13 +163,11 @@ bool GetFontx(FontxFile *fxs, uint32_t sjis , uint8_t *pGlyph,
 {
   
   int i;
-//  FontxFile fx;
-  long offset;
-  int ret;
+  uint32_t offset;
 
 if(FontxDebug)printf("[GetFontx]sjis=%x %d\n",sjis,sjis);
   for(i=0; i<2; i++){
-    if(!Fontx_openFontxFile(&fxs[i])) continue;
+    if(!OpenFontx(&fxs[i])) continue;
 //    printf("openFontxFile[%d]\n",i);
     
     if(sjis < 0x100){
@@ -178,11 +176,11 @@ if(FontxDebug)printf("[GetFontx]fxs.is_ank fxs.fsz=%d\n",fxs[i].fsz);
 	offset = 17 + sjis * fxs[i].fsz;
 if(FontxDebug)printf("[GetFontx]offset=%d\n",offset);
 	if(fseek(fxs[i].file, offset, SEEK_SET)) {
-  	  printf("Fontx::fseek(18) failed.\n");
+	  printf("Fontx:seek(%u) failed.\n",offset);
 	  return false;
         }
 	if(fread(pGlyph, 1, fxs[i].fsz, fxs[i].file) != fxs[i].fsz){
-	  printf("Fontx::fread failed.\n");
+	  printf("Fontx:fread failed.\n");
 	  return false;
         }
 	if(pw) *pw = fxs[i].w;
@@ -192,27 +190,30 @@ if(FontxDebug)printf("[GetFontx]offset=%d\n",offset);
     }
     else {
       if(!fxs[i].is_ank){
-        if(fseek(fxs[i].file, 18, SEEK_SET)) {
-  	  printf("Fontx::fseek(18) failed.\n");
+//        if(fseek(fxs[i].file, 18, SEEK_SET)) {
+        offset = 18;
+        if(fseek(fxs[i].file, offset, SEEK_SET)) {
+	  printf("Fontx:seek(%u) failed.\n",offset);
 	  return false;
         }
         uint16_t buf[2], nc = 0, bc = fxs[i].bc;
     
+        /* Search Code Block */
         while(bc--){ 
 	  if(fread((char *)buf, 1, 4, fxs[i].file) != 4){
-	    printf("Fontx::fread failed.\n");
+	    printf("Fontx:fread failed.\n");
 	    return false;
 	  }
 if(FontxDebug)printf("[GetFontx]buf=%x %x\n",buf[0],buf[1]);
 	  if(sjis >= buf[0] && sjis <= buf[1]) {
 	    nc += sjis - buf[0];
-	    uint32_t pos = 18 + fxs[i].bc * 4 + nc * fxs[i].fsz;
-	    if(fseek(fxs[i].file, pos, SEEK_SET)) {
-	      printf("FsFontx::seek(%u) failed.\n",pos);
+	    offset = 18 + fxs[i].bc * 4 + nc * fxs[i].fsz;
+	    if(fseek(fxs[i].file, offset, SEEK_SET)) {
+	      printf("Fontx:seek(%u) failed.\n",offset);
 	      return false;
 	    }
 	    if(fread(pGlyph, 1, fxs[i].fsz, fxs[i].file) != fxs[i].fsz){
-	      printf("Fontx::fread failed.\n");
+	      printf("Fontx:fread failed.\n");
 	      return false;
             }
 	    if(pw) *pw = fxs[i].w;
@@ -368,7 +369,6 @@ void Font2Bitmap(uint8_t *fonts, uint8_t *line, uint8_t w, uint8_t h, uint8_t in
 
   int mask = 7;
   int fontp;
-  int linep;
   fontp = 0;
   for(y=0; y<h; y++){
     for(x=0; x<w; x++){
@@ -417,6 +417,7 @@ void ReversBitmap(uint8_t *line, uint8_t w, uint8_t h) {
 // フォントパターンの表示
 void ShowFont(uint8_t *fonts, uint8_t pw, uint8_t ph) {
   int x,y,fpos;
+  printf("[ShowFont pw=%d ph=%d]\n",pw,ph);
   fpos=0;
   for (y=0;y<ph;y++) {
     printf("%02d",y);
@@ -430,17 +431,21 @@ void ShowFont(uint8_t *fonts, uint8_t pw, uint8_t ph) {
     printf("\n");
     fpos=fpos+(pw+7)/8;
   }
+  printf("\n");
 }
 
 // Bitmapの表示
 void ShowBitmap(uint8_t *bitmap, uint8_t pw, uint8_t ph) {
-  int x,y,z,fpos;
+  int x,y,fpos;
+  printf("[ShowBitmap pw=%d ph=%d]\n",pw,ph);
+#if 0
   for (y=0;y<(ph+7)/8;y++) {
     for (x=0;x<pw;x++) {
-printf("%02x ",bitmap[x+y*32]);
+      printf("%02x ",bitmap[x+y*32]);
     }
     printf("\n");
   }
+#endif
 
   fpos=0;
   for (y=0;y<ph;y++) {
@@ -457,23 +462,24 @@ printf("%02x ",bitmap[x+y*32]);
     fpos++;
     if (fpos > 7) fpos = 0;
   }
+  printf("\n");
 }
 
 
 // フォント構造体の表示
-void DumpFX(FontxFile *fxs)
+void DumpFontx(FontxFile *fxs)
 {
   int i;
   for(i=0;i<2;i++) {
-    printf("fxs[%d]->path=%s\n",i,fxs[i].path);
-    printf("fxs[%d]->opened=%d\n",i,fxs[i].opened);
-    printf("fxs[%d]->fxname=%s\n",i,fxs[i].fxname);
-    printf("fxs[%d]->valid=%d\n",i,fxs[i].valid);
-    printf("fxs[%d]->is_ank=%d\n",i,fxs[i].is_ank);
-    printf("fxs[%d]->w=%d\n",i,fxs[i].w);
-    printf("fxs[%d]->h=%d\n",i,fxs[i].h);
-    printf("fxs[%d]->fsz=%d\n",i,fxs[i].fsz);
-    printf("fxs[%d]->bc=%d\n",i,fxs[i].bc);
+    printf("fxs[%d]->path=[%s]\n",i,fxs[i].path);
+    printf("fxs[%d]->opened=[%d]\n",i,fxs[i].opened);
+    printf("fxs[%d]->fxname=[%s]\n",i,fxs[i].fxname);
+    printf("fxs[%d]->valid=[%d]\n",i,fxs[i].valid);
+    printf("fxs[%d]->is_ank=[%d]\n",i,fxs[i].is_ank);
+    printf("fxs[%d]->w=[%d]\n",i,fxs[i].w);
+    printf("fxs[%d]->h=[%d]\n",i,fxs[i].h);
+    printf("fxs[%d]->fsz=[%d]\n",i,fxs[i].fsz);
+    printf("fxs[%d]->bc=[%d]\n",i,fxs[i].bc);
   }
 }
 
