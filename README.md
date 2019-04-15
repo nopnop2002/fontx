@@ -15,7 +15,7 @@ __Fontx2Bitmap__
 __UnderlineBitmap__  
 ビットマップにアンダーラインを追加する。   
 
-_ReversBitmap__  
+__ReversBitmap__  
 ビットマップの0/1を反転する。   
 
 __UTF2SJIS__  
