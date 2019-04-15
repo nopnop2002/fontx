@@ -40,9 +40,12 @@ bool OpenFontx(FontxFile *fx)
     char buf[18];
 
     fread(buf, sizeof buf, 1, fx->file);
-//      for(i=0;i<sizeof(buf);i++) {
-//        printf("buf[%d]=%x\n",i,buf[i]);
-//      }
+if(FontxDebug) {
+      int i;
+      for(i=0;i<sizeof(buf);i++) {
+        printf("buf[%d]=%x\n",i,buf[i]);
+      }
+}
     memcpy(fx->fxname,&buf[6],8);
     fx->w = buf[14];
     fx->h = buf[15];
@@ -165,7 +168,7 @@ bool GetFontx(FontxFile *fxs, uint32_t sjis , uint8_t *pGlyph,
   int i;
   uint32_t offset;
 
-if(FontxDebug)printf("[GetFontx]sjis=%x %d\n",sjis,sjis);
+if(FontxDebug)printf("[GetFontx]sjis=0x%x %d\n",sjis,sjis);
   for(i=0; i<2; i++){
     if(!OpenFontx(&fxs[i])) continue;
 //    printf("openFontxFile[%d]\n",i);
@@ -190,7 +193,6 @@ if(FontxDebug)printf("[GetFontx]offset=%d\n",offset);
     }
     else {
       if(!fxs[i].is_ank){
-//        if(fseek(fxs[i].file, 18, SEEK_SET)) {
         offset = 18;
         if(fseek(fxs[i].file, offset, SEEK_SET)) {
 	  printf("Fontx:seek(%u) failed.\n",offset);
@@ -204,7 +206,7 @@ if(FontxDebug)printf("[GetFontx]offset=%d\n",offset);
 	    printf("Fontx:fread failed.\n");
 	    return false;
 	  }
-if(FontxDebug)printf("[GetFontx]buf=%x %x\n",buf[0],buf[1]);
+if(FontxDebug)printf("[GetFontx]buf=0x%x-0x%x\n",buf[0],buf[1]);
 	  if(sjis >= buf[0] && sjis <= buf[1]) {
 	    nc += sjis - buf[0];
 	    offset = 18 + fxs[i].bc * 4 + nc * fxs[i].fsz;
@@ -496,23 +498,23 @@ uint16_t UTF2SJIS(uint8_t *utf8) {
   uint16_t sjis;
 
   if((cd = iconv_open("sjis","utf-8")) == (iconv_t)-1){
-if(FontxDebug)printf("iconv open fail \n");
+if(FontxDebug)printf("[UTF2SJIS] iconv open fail \n");
     return 0;
   }else {
-if(FontxDebug)printf("iconv open ok \n");
+if(FontxDebug)printf("[UTF2SJIS]iconv open ok \n");
   }
 
   iconv(cd,(char**)pi2,&ilen,(char**)po2,&olen);
   iconv_close(cd);
 
-if(FontxDebug)printf("[UTF2SJIS]strJIS=%x-%x\n",strJIS[0],strJIS[1]);
+if(FontxDebug)printf("[UTF2SJIS]strJIS=0x%x-0x%x\n",strJIS[0],strJIS[1]);
   if (strJIS[0] & 0x80) {
     sjis = strJIS[0] << 8;
     sjis = sjis + strJIS[1];
   } else {
     sjis = strJIS[0];
   }
-if(FontxDebug)printf("[UTF2SJIS]sjis=%x\n",sjis);
+if(FontxDebug)printf("[UTF2SJIS]sjis=0x%x\n",sjis);
   return sjis;
 }
 
